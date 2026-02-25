@@ -11,6 +11,7 @@ import { getPlacementInfo } from "./scripts/Bitrix24HelperFunctions/getPlacement
 import { attachFileToLead } from "./scripts/attachFileToLead/attachFileToLead.js";
 import { destroyInstallmentTable } from "./scripts/CreateTableOfInstallments/destroyTheTableOfInstallment.js";
 import { emptyFinanceFields } from "./scripts/changeFields.js/emptyTheFinanceFields.js";
+import { getLeadData } from "./scripts/Bitrix24HelperFunctions/getLeadData.js";
 // import { disableTheDownloadButton } from "./scripts/changeVisibiltyOfFeilds/disableTheDownloadButton.js";
 
 // A simple console log to verify connection
@@ -102,7 +103,11 @@ const handlechangeOfFinanceValues = () => {
 
 const downloadPDFSummary = async () => {
   const pdfDoc = await generatePDFOfSummary();
-  pdfDoc.save("summary.pdf");
+  const projectText = projectSelect.options[projectSelect.selectedIndex].text;
+  const leadData = await getLeadData();
+  const leadTitle = leadData['TITLE'];
+  const leadId = leadData['ID'];
+  pdfDoc.save(`${projectText}-${leadTitle}-${leadId}_investment_summary.pdf`);
 };
 
 // const attachPDFToLead = async () => {
