@@ -230,9 +230,9 @@ const currentCalculations = {
         imageUrl: 'https://images.premierchoiceint.online/images/2026/02/27/Sales-Offer-Box-Park-III.jpgcb69ff77704270aa.jpeg'
       },
       default: {
-        logoUrl: "https://i.postimg.cc/SxkkYbV8/Grand-Orchard.png",
+        logoUrl: "https://s3.premierchoiceint.online/sales%20offer%20Box%20Park%203-04.png",
         imageUrl:
-          "https://i.postimg.cc/50nFTm0P/DHA-Orchard-Night-Shot-01-Small.jpg",
+          "https://s3.premierchoiceint.online/Sales%20Offer%20Box%20Park%20III.jpg.jpeg",
       },
     };
 
@@ -256,16 +256,16 @@ const currentCalculations = {
     console.log("[PDF Gen] Drawing Page 1...");
 
 
-  //  if(projectName == 'Box Park-3'){
-  //     const firstPageImageURL = "https://images.premierchoiceint.online/images/2026/02/27/Sales-Offer-Box-Park-III.jpgcb69ff77704270aa.jpeg"
-  //     try {
-  //       const base64OfFirstImage = await imageToBase64(firstPageImageURL);
-  //       doc.addImage(base64OfFirstImage, "JPEG", 0, 0, pageW, pageH);
-  //       doc.addPage();
-  //     } catch(e) {
-  //       console.warn("[PDF Gen] Skipping Box Park-3 image due to CORS/Load error");
-  //     }
-  //   }
+   if(projectName == 'Box Park-3'){
+      const firstPageImageURL = "https://s3.premierchoiceint.online/Sales%20Offer%20Box%20Park%20III.jpg.jpeg";
+      try {
+        const base64OfFirstImage = await imageToBase64(firstPageImageURL);
+        doc.addImage(base64OfFirstImage, "JPEG", 0, 0, pageW, pageH);
+        doc.addPage();
+      } catch(e) {
+        console.warn("[PDF Gen] Skipping Box Park-3 image due to CORS/Load error");
+      }
+    }
 
     // --- PAGE 1: TITLE PAGE ---
     let currentY = 15;
