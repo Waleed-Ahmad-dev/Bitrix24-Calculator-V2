@@ -227,7 +227,7 @@ const currentCalculations = {
       },
       "Box Park-3":{
         logoUrl: 'https://i.postimg.cc/pVjJJCth/sales-offer-Box-Park-3-04.png',
-        imageUrl: 'https://i.postimg.cc/bYn99gjn/Sales-Offer-Box-Park-III-jpg.jpg'
+        imageUrl: 'https://i.postimg.cc/L4z2FdpS/Front-View.jpg'
       },
       default: {
         logoUrl: "https://i.postimg.cc/SxkkYbV8/Grand-Orchard.png",
