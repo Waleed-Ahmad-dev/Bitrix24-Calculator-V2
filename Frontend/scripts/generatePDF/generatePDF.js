@@ -226,8 +226,8 @@ const currentCalculations = {
           "https://i.postimg.cc/50nFTm0P/DHA-Orchard-Night-Shot-01-Small.jpg",
       },
       "Box Park-3":{
-        logoUrl: 'https://images.premierchoiceint.online/images/2026/02/27/sales-offer-Box-Park-3-04.png',
-        imageUrl: 'https://images.premierchoiceint.online/images/2026/02/27/Sales-Offer-Box-Park-III.jpgcb69ff77704270aa.jpeg'
+        logoUrl: 'https://i.postimg.cc/pVjJJCth/sales-offer-Box-Park-3-04.png',
+        imageUrl: 'https://i.postimg.cc/bYn99gjn/Sales-Offer-Box-Park-III-jpg.jpg'
       },
       default: {
         logoUrl: "https://i.postimg.cc/pVjJJCth/sales-offer-Box-Park-3-04.png",
