@@ -12,6 +12,7 @@ import { attachFileToLead } from "./scripts/attachFileToLead/attachFileToLead.js
 import { destroyInstallmentTable } from "./scripts/CreateTableOfInstallments/destroyTheTableOfInstallment.js";
 import { emptyFinanceFields } from "./scripts/changeFields.js/emptyTheFinanceFields.js";
 import { getLeadData } from "./scripts/Bitrix24HelperFunctions/getLeadData.js";
+import { addBalloonPaymentRow } from "./scripts/ballonPayment/ballonPayment.js";
 // import { disableTheDownloadButton } from "./scripts/changeVisibiltyOfFeilds/disableTheDownloadButton.js";
 
 // A simple console log to verify connection
@@ -37,6 +38,7 @@ const installmentPlanSelect = document.getElementById("installment-duration");
 const downloadButtonSelect = document.getElementById("menu-download-pdf");
 const attachPDFButtonSelect = document.getElementById("menu-attach-lead");
 const propertyFloorSelect = document.getElementById("property-floor");
+const addBalloonPaymentBtn = document.getElementById("add-balloon-payment-btn");
 
 const handleFilterChange = async () => {
   const filters = {
@@ -218,3 +220,5 @@ installmentPlanSelect.addEventListener("change", handlechangeOfFinanceValues);
 downloadButtonSelect.addEventListener("click", downloadPDFSummary);
 
 attachPDFButtonSelect.addEventListener("click", attachPDFToLead);
+
+addBalloonPaymentBtn.addEventListener("click", addBalloonPaymentRow);
