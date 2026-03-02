@@ -38,7 +38,7 @@ const installmentPlanSelect = document.getElementById("installment-duration");
 const downloadButtonSelect = document.getElementById("menu-download-pdf");
 const attachPDFButtonSelect = document.getElementById("menu-attach-lead");
 const propertyFloorSelect = document.getElementById("property-floor");
-const addBalloonPaymentBtn = document.getElementById("add-balloon-payment-btn");
+const addBalloonPaymentBtn = document.getElementById("add-balloon-btn");
 
 const handleFilterChange = async () => {
   const filters = {
