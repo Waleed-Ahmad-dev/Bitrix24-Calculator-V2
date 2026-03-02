@@ -1,4 +1,6 @@
 export const addBalloonPaymentRow = () => {
+
+    console.log("Add Balloon Payment button clicked");
   const balloonRowsContainer = document.getElementById('balloon-rows-container');
   
   // Safety check to ensure the container exists
