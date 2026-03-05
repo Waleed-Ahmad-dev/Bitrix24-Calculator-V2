@@ -84,7 +84,7 @@ export const createTableOfInstallments = () => {
 
   for (let i = 1; i <= getInstallmentNumber; i++) {
     const deduction = deductionPerRow[i] || 0;
-    const adjustedAmount = installmentPerAmount - deduction;
+    const adjustedAmount = parseFloat(installmentPerAmount - deduction).toFixed(2);
 
     // --- Standard Installment Row ---
     const row = document.createElement("tr");
