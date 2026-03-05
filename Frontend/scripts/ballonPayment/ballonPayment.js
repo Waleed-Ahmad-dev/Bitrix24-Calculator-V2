@@ -44,6 +44,7 @@ export const addBalloonPaymentRow = () => {
   removeBtn.addEventListener('click', () => {
     row.remove();
     // TODO: Call your calculation update function here later
+    createTableOfInstallments();
   });
 
   const monthInput = row.querySelector('.balloon-month');
