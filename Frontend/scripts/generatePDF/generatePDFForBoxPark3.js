@@ -472,9 +472,9 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
         textColor: "#FFFFFF",
         fontSize: 12,
         fontStyle: "bold",
-        halign: "left", 
+        halign: "left",
         // Sync padding with body to ensure vertical alignment
-        cellPadding: { top: 5, right: 10, bottom: 5, left: 10 }, 
+        cellPadding: { top: 5, right: 10, bottom: 5, left: 10 },
       },
       bodyStyles: {
         fontSize: 10,
@@ -482,8 +482,8 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
         cellPadding: { top: 5, right: 10, bottom: 5, left: 10 },
       },
       columnStyles: {
-        0: { halign: "left" }, 
-        1: { halign: "right", fontStyle: "bold" }, 
+        0: { halign: "left" },
+        1: { halign: "right", fontStyle: "bold" },
       },
       // didParseCell is the correct way to override the header specifically
       didParseCell: function (data) {
@@ -496,6 +496,77 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
         lineWidth: 0,
         font: "helvetica",
       },
+    });
+
+    // --- INSTALLMENT SCHEDULE TABLE ---
+    console.log("[PDF Gen] Building Installment Schedule...");
+
+    const installmentPlan =
+      parseInt(document.getElementById("installment-duration").value) || 0;
+    const scheduleBody = [];
+
+    // Reuse your Balloon Payment gathering logic
+    const balloonRows = document.querySelectorAll(".balloon-row");
+    const balloonPayments = [];
+    balloonRows.forEach((row) => {
+      const month = parseInt(row.querySelector(".balloon-month").value);
+      const amount = parseFloat(row.querySelector(".balloon-amount").value);
+      if (!isNaN(month) && month > 0 && !isNaN(amount) && amount > 0) {
+        balloonPayments.push({ month, amount });
+      }
+    });
+
+    // Logic to build the rows
+    for (let i = 1; i <= installmentPlan; i++) {
+      // Add Standard Monthly Installment
+      scheduleBody.push([
+        i.toString(),
+        "Monthly Installment",
+        `PKR ${currentCalculations.monthlyInstallment}`,
+      ]);
+
+      // Check if a Balloon Payment exists for this month
+      const balloonsForThisMonth = balloonPayments.filter(
+        (bp) => bp.month === i,
+      );
+      balloonsForThisMonth.forEach((balloon) => {
+        scheduleBody.push([
+          "", // Empty month to match your screenshot image_2f7586.png
+          "BALLOON PAYMENT",
+          `PKR ${formatCurrency(balloon.amount)}`,
+        ]);
+      });
+    }
+
+    doc.autoTable({
+      startY: doc.autoTable.previous.finalY + 15,
+      head: [["Month", "Description", "Amount"]],
+      body: scheduleBody,
+      theme: "grid",
+      headStyles: {
+        fillColor: pciGold, // Using your Gold color for the header
+        textColor: "#333333",
+        fontStyle: "bold",
+      },
+      columnStyles: {
+        0: { cellWidth: 30 },
+        2: { halign: "right" },
+      },
+      // --- THIS ADDS THE ORANGE HIGHLIGHTING ---
+      didParseCell: function (data) {
+        // Check if the Description column contains "BALLOON PAYMENT"
+        if (data.column.index === 1 && data.cell.raw === "BALLOON PAYMENT") {
+          // Apply orange/gold background to the whole row
+          data.row.cells[0].styles.fillColor = [255, 248, 225]; // Light Orange/Gold
+          data.row.cells[1].styles.fillColor = [255, 248, 225];
+          data.row.cells[2].styles.fillColor = [255, 248, 225];
+
+          // Make the text bold and slightly darker orange
+          data.row.cells[1].styles.fontStyle = "bold";
+          data.row.cells[2].styles.fontStyle = "bold";
+        }
+      },
+      margin: { left: 15, right: 15 },
     });
 
     // // Summary Table
