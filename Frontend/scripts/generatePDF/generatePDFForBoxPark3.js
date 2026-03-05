@@ -1,7 +1,6 @@
 import { getTheProductData } from "../Bitrix24HelperFunctions/getTheProductData.js";
 import { fetchReadableText } from "../Bitrix24HelperFunctions/fetchReadableText.js";
 
-
 // Helper: Converts image URL to Base64 for PDF embedding
 async function imageToBase64(url) {
   console.log(`[ImageHelper] Converting to Base64: ${url}`);
@@ -97,101 +96,118 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
     //   remainingAmount: formatCurrency(remainingBalance),
     // };
 
-    
-
     // 1. Gather Data from DOM
-const projectSelect = document.getElementById("project-name");
-const clientNameInput = document.getElementById("client-name");
-const propertyTypeSelect = document.getElementById("property-type");
-const itemFilterSelect = document.getElementById("property-item");
-const paymentMethodSelect = document.getElementById("payment-condition");
-const grossAreaInput = document.getElementById("gross-area");
+    const projectSelect = document.getElementById("project-name");
+    const clientNameInput = document.getElementById("client-name");
+    const propertyTypeSelect = document.getElementById("property-type");
+    const itemFilterSelect = document.getElementById("property-item");
+    const paymentMethodSelect = document.getElementById("payment-condition");
+    const grossAreaInput = document.getElementById("gross-area");
 
-// These are DIVs in your HTML, use .innerText or .textContent
-const totalPriceDiv = document.getElementById("summary-total-price");
-const installmentsDiv = document.getElementById("summary-installments-no");
-const downPaymentDiv = document.getElementById("summary-downpayment");
-const possessionAmtDiv = document.getElementById("summary-possession-amount");
-const installmentAmtDiv = document.getElementById("summary-remaining"); 
-const monthlyInstallmentDiv = document.getElementById("summary-installment"); // For the recurring amount
+    // These are DIVs in your HTML, use .innerText or .textContent
+    const totalPriceDiv = document.getElementById("summary-total-price");
+    const installmentsDiv = document.getElementById("summary-installments-no");
+    const downPaymentDiv = document.getElementById("summary-downpayment");
+    const possessionAmtDiv = document.getElementById(
+      "summary-possession-amount",
+    );
+    const installmentAmtDiv = document.getElementById("summary-remaining");
+    const monthlyInstallmentDiv = document.getElementById(
+      "summary-installment",
+    ); // For the recurring amount
 
-// Input percentages for calculation
-const downPaymentPercInput = document.getElementById("downpayment-percentage");
-const possessionPercSelect = document.getElementById("possession-percentage");
+    // Input percentages for calculation
+    const downPaymentPercInput = document.getElementById(
+      "downpayment-percentage",
+    );
+    const possessionPercSelect = document.getElementById(
+      "possession-percentage",
+    );
 
-// Get raw text/values
-const projectName = projectSelect.options[projectSelect.selectedIndex].text;
-const clientName = clientNameInput.value;
-const propertyType = propertyTypeSelect.options[propertyTypeSelect.selectedIndex].text;
-const unitNumber = itemFilterSelect.options[itemFilterSelect.selectedIndex].text;
-const condition = paymentMethodSelect.options[paymentMethodSelect.selectedIndex].text;
-const grossArea = grossAreaInput.value;
+    // Get raw text/values
+    const projectName = projectSelect.options[projectSelect.selectedIndex].text;
+    const clientName = clientNameInput.value;
+    const propertyType =
+      propertyTypeSelect.options[propertyTypeSelect.selectedIndex].text;
+    const unitNumber =
+      itemFilterSelect.options[itemFilterSelect.selectedIndex].text;
+    const condition =
+      paymentMethodSelect.options[paymentMethodSelect.selectedIndex].text;
+    const grossArea = grossAreaInput.value;
 
-// FIX: Use .innerText for DIV elements
-const numberOfInstallments = parseInt(installmentsDiv.innerText) || 0;
-const totalPriceRaw = parseCurrency(totalPriceDiv.innerText);
-const dpAmount = parseCurrency(downPaymentDiv.innerText);
-const possAmountRaw = parseCurrency(possessionAmtDiv.innerText);
-const remainingBalance = parseCurrency(installmentAmtDiv.innerText);
-const monthlyAmt = monthlyInstallmentDiv.innerText;
+    // FIX: Use .innerText for DIV elements
+    const numberOfInstallments = parseInt(installmentsDiv.innerText) || 0;
+    const totalPriceRaw = parseCurrency(totalPriceDiv.innerText);
+    const dpAmount = parseCurrency(downPaymentDiv.innerText);
+    const possAmountRaw = parseCurrency(possessionAmtDiv.innerText);
+    const remainingBalance = parseCurrency(installmentAmtDiv.innerText);
+    const monthlyAmt = monthlyInstallmentDiv.innerText;
 
+    const productData = await getTheProductData(itemFilterSelect.value);
 
-const productData = await getTheProductData(itemFilterSelect.value);
+    console.log("[PDF Gen] Fetched Product Data:", productData);
 
-console.log("[PDF Gen] Fetched Product Data:", productData);
+    // get the property type:
+    const {
+      PROPERTY_177: propertyTypeValue,
+      PROPERTY_139: categoryTypeValue,
+      PROPERTY_135: floorTypeValue,
+    } = productData || {};
 
-// get the property type:
-const { PROPERTY_177: propertyTypeValue, PROPERTY_139: categoryTypeValue, PROPERTY_135: floorTypeValue } = productData || {};
+    // get the value of the properties:
+    const propertyTypeID = propertyTypeValue ? propertyTypeValue.value : null;
+    const categoryID = categoryTypeValue ? categoryTypeValue.value : null;
+    const floorValue = floorTypeValue ? floorTypeValue.value : null;
 
-// get the value of the properties:
-const propertyTypeID = propertyTypeValue ? propertyTypeValue.value : null;
-const categoryID = categoryTypeValue ? categoryTypeValue.value : null;
-const floorValue = floorTypeValue ? floorTypeValue.value : null;
+    const balloonAmtDiv = document.getElementById("summary-balloon-total");
+    const balloonAmtRaw = parseCurrency(balloonAmtDiv.innerText) || 0;
 
+    console.log(
+      `[PDF Gen] Property Type ID: ${propertyTypeID} | Category ID: ${categoryID}`,
+    );
 
-console.log(`[PDF Gen] Property Type ID: ${propertyTypeID} | Category ID: ${categoryID}`);
+    const propertyTypeText = propertyTypeID
+      ? await fetchReadableText(propertyTypeID)
+      : "N/A";
 
-const propertyTypeText = propertyTypeID ? await fetchReadableText(propertyTypeID) : "N/A";
+    const categoryTypeText = categoryID
+      ? await fetchReadableText(categoryID)
+      : "N/A";
 
-const categoryTypeText = categoryID ? await fetchReadableText(categoryID): "N/A";
+    const floorTypeText = floorValue
+      ? await fetchReadableText(floorValue)
+      : "N/A";
 
-const floorTypeText = floorValue ? await fetchReadableText(floorValue) : "N/A";
+    console.log(
+      `[PDF Gen] Resolved Property Type: ${propertyTypeText} | Resolved Category: ${categoryTypeText} | Resolved Floor: ${floorTypeText}`,
+    );
 
+    console.log(
+      `[PDF Gen] Fixed! Installments detected: ${numberOfInstallments}`,
+    );
 
-
-console.log(`[PDF Gen] Resolved Property Type: ${propertyTypeText} | Resolved Category: ${categoryTypeText} | Resolved Floor: ${floorTypeText }`);
-
-
-
-
-
-
-
-
-console.log(`[PDF Gen] Fixed! Installments detected: ${numberOfInstallments}`);
-
-
-
-// Prepare the Main Data Object
-const currentCalculations = {
-    projectName: projectName,
-    clientName: clientName,
-    propertyType: propertyTypeText,
-    categoryType: categoryTypeText,
-    floorType: floorTypeText,
-    unitNumber: unitNumber,
-    condition: condition,
-    mode: 'custom-area',
-    netArea: grossArea,
-    totalPrice: formatCurrency(totalPriceRaw),
-    numberOfInstallments: numberOfInstallments,
-    monthlyInstallment: monthlyAmt, 
-    downPaymentPercent: parseCurrency(downPaymentPercInput.value),
-    downPayment: formatCurrency(dpAmount),
-    possessionPercent: parseCurrency(possessionPercSelect.value),
-    possessionAmount: formatCurrency(possAmountRaw),
-    remainingAmount: formatCurrency(remainingBalance)
-};
+    // Prepare the Main Data Object
+    const currentCalculations = {
+      projectName: projectName,
+      clientName: clientName,
+      propertyType: propertyTypeText,
+      categoryType: categoryTypeText,
+      floorType: floorTypeText,
+      unitNumber: unitNumber,
+      condition: condition,
+      mode: "custom-area",
+      netArea: grossArea,
+      totalPrice: formatCurrency(totalPriceRaw),
+      numberOfInstallments: numberOfInstallments,
+      monthlyInstallment: monthlyAmt,
+      downPaymentPercent: parseCurrency(downPaymentPercInput.value),
+      downPayment: formatCurrency(dpAmount),
+      possessionPercent: parseCurrency(possessionPercSelect.value),
+      possessionAmount: formatCurrency(possAmountRaw),
+      remainingAmount: formatCurrency(remainingBalance),
+      totalPriceRaw: totalPriceRaw,
+      totalBalloonAmount: formatCurrency(balloonAmtRaw),
+    };
 
     console.log(
       "[PDF Gen] Current Calculations Data Object:",
@@ -225,13 +241,14 @@ const currentCalculations = {
         imageUrl:
           "https://i.postimg.cc/50nFTm0P/DHA-Orchard-Night-Shot-01-Small.jpg",
       },
-      "Box Park-3":{
-        logoUrl: 'https://i.postimg.cc/pVjJJCth/sales-offer-Box-Park-3-04.png',
-        imageUrl: 'https://i.postimg.cc/L4z2FdpS/Front-View.jpg'
+      "Box Park-3": {
+        logoUrl: "https://i.postimg.cc/pVjJJCth/sales-offer-Box-Park-3-04.png",
+        imageUrl: "https://i.postimg.cc/L4z2FdpS/Front-View.jpg",
       },
       default: {
         logoUrl: "https://i.postimg.cc/SxkkYbV8/Grand-Orchard.png",
-        imageUrl: "https://i.postimg.cc/50nFTm0P/DHA-Orchard-Night-Shot-01-Small.jpg"
+        imageUrl:
+          "https://i.postimg.cc/50nFTm0P/DHA-Orchard-Night-Shot-01-Small.jpg",
       },
     };
 
@@ -254,15 +271,17 @@ const currentCalculations = {
 
     console.log("[PDF Gen] Drawing Page 1...");
 
-
-   if(projectName == 'Box Park-3'){
-      const firstPageImageURL = "https://i.postimg.cc/bYn99gjn/Sales-Offer-Box-Park-III-jpg.jpg";
+    if (projectName == "Box Park-3") {
+      const firstPageImageURL =
+        "https://i.postimg.cc/bYn99gjn/Sales-Offer-Box-Park-III-jpg.jpg";
       try {
         const base64OfFirstImage = await imageToBase64(firstPageImageURL);
         doc.addImage(base64OfFirstImage, "JPEG", 0, 0, pageW, pageH);
         doc.addPage();
-      } catch(e) {
-        console.warn("[PDF Gen] Skipping Box Park-3 image due to CORS/Load error");
+      } catch (e) {
+        console.warn(
+          "[PDF Gen] Skipping Box Park-3 image due to CORS/Load error",
+        );
       }
     }
 
@@ -319,14 +338,14 @@ const currentCalculations = {
     // doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(pciBlue);
     // doc.text('Project Details', 15, detailsY);
     // doc.setFontSize(11).setFont('helvetica', 'normal').setTextColor(textDark);
-    
+
     // // --- UPDATED PROJECT DETAILS (Removed Location & Handover) ---
     // const projectDetails = [
-    //     `Project: ${currentCalculations.projectName}`, 
-    //     `Unit Type: ${currentCalculations.propertyType}`, 
+    //     `Project: ${currentCalculations.projectName}`,
+    //     `Unit Type: ${currentCalculations.propertyType}`,
     //     `Payment Plan: ${currentCalculations.condition}`
     // ];
-    
+
     // projectDetails.forEach((line, index) => doc.text(line, 15, detailsY + 12 + (index * 6)));
 
     // const dividerX = 15 + colWidth + 10;
@@ -334,11 +353,11 @@ const currentCalculations = {
     // doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(pciBlue);
     // doc.text('Unit Details', dividerX + 10, detailsY);
     // doc.setFontSize(11).setFont('helvetica', 'normal').setTextColor(textDark);
-    
+
     // // --- UPDATED UNIT DETAILS (Removed Bed/Bath/Loc/Handover, Updated Floor/Type, Added Base Rate) ---
     // const unitDetails = [
     //     `Unit Number: ${currentCalculations.unitNumber}`,
-    //     `Type: ${currentCalculations.propertyType}`, 
+    //     `Type: ${currentCalculations.propertyType}`,
     //     `Category: ${currentCalculations.categoryType}`,
     //     `Floor: ${currentCalculations.floorType}`,
     //     `Total Area: ${currentCalculations.mode === 'custom-area' ? currentCalculations.netArea : currentCalculations.plotSize}`,
@@ -349,46 +368,57 @@ const currentCalculations = {
     // unitDetails.forEach((line, index) => doc.text(line, dividerX + 10, detailsY + 12 + (index * 6)));
     // --- PAGE 1: PROPERTY DETAILS TABLE ---
     const detailsY = currentY;
-    
+
     // 1. Add the Table Heading
-    doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(pciBlue);
-    doc.text('Property Details', 15, detailsY);
-    
+    doc.setFontSize(16).setFont("helvetica", "bold").setTextColor(pciBlue);
+    doc.text("Property Details", 15, detailsY);
+
     // Resolve the total area variable safely
-    const totalAreaValue = currentCalculations.mode === 'custom-area' 
-        ? currentCalculations.netArea 
+    const totalAreaValue =
+      currentCalculations.mode === "custom-area"
+        ? currentCalculations.netArea
         : currentCalculations.plotSize;
 
     // 2. Prepare 4-column data to keep the layout compact but structured
     const propertyDetailsBody = [
-        ['Project:', currentCalculations.projectName, 'Unit Number:', currentCalculations.unitNumber],
-        ['Type:', currentCalculations.propertyType, 'Category:', currentCalculations.categoryType],
-        ['Floor:', currentCalculations.floorType, 'Total Area:', totalAreaValue] 
+      [
+        "Project:",
+        currentCalculations.projectName,
+        "Unit Number:",
+        currentCalculations.unitNumber,
+      ],
+      [
+        "Type:",
+        currentCalculations.propertyType,
+        "Category:",
+        currentCalculations.categoryType,
+      ],
+      ["Floor:", currentCalculations.floorType, "Total Area:", totalAreaValue],
     ];
 
     // 3. Render the table using autoTable
     doc.autoTable({
-        startY: detailsY + 5,
-        body: propertyDetailsBody,
-        theme: 'grid', 
-        styles: { 
-            fontSize: 10, 
-            textColor: textDark,
-            cellPadding: 4,
-            lineColor: [220, 220, 220], // Light gray borders for a clean look
-            lineWidth: 0.1
-        },
-        // Apply your existing 'bgLight' background color to the label columns to make them pop
-        columnStyles: {
-            0: { fontStyle: 'bold', fillColor: bgLight },
-            1: { },
-            2: { fontStyle: 'bold', fillColor: bgLight },
-            3: { }
-        },
-        margin: { left: 15, right: 15 }
+      startY: detailsY + 5,
+      body: propertyDetailsBody,
+      theme: "grid",
+      styles: {
+        fontSize: 10,
+        textColor: textDark,
+        cellPadding: 4,
+        lineColor: [220, 220, 220], // Light gray borders for a clean look
+        lineWidth: 0.1,
+      },
+      // Apply your existing 'bgLight' background color to the label columns to make them pop
+      columnStyles: {
+        0: { fontStyle: "bold", fillColor: bgLight },
+        1: {},
+        2: { fontStyle: "bold", fillColor: bgLight },
+        3: {},
+      },
+      margin: { left: 15, right: 15 },
     });
 
-    // Optional: If you have elements drawing *after* this on Page 1, 
+    // Optional: If you have elements drawing *after* this on Page 1,
     // update currentY so they don't overlap the new table.
     currentY = doc.autoTable.previous.finalY + 15;
 
@@ -399,15 +429,12 @@ const currentCalculations = {
 
     doc.setFillColor(pciBlue).rect(0, 0, pageW2, 40, "F");
 
-    
-    try{
-    const logoBase64 = await imageToBase64(companyLogoUrlSecond);
-    doc.addImage(logoBase64, 'PNG', 15, 12, 60, 18);
-    }
-    catch(e){
+    try {
+      const logoBase64 = await imageToBase64(companyLogoUrlSecond);
+      doc.addImage(logoBase64, "PNG", 15, 12, 60, 18);
+    } catch (e) {
       console.warn("[PDF Gen] Skipping Company Logo on Page 2 due to error");
     }
-    
 
     doc
       .setFontSize(28)
@@ -415,114 +442,160 @@ const currentCalculations = {
       .setTextColor("#FFFFFF")
       .text("Investment Summary", pageW2 - 15, 23, { align: "right" });
 
-    // Summary Table
-    doc.autoTable({
-      startY: 65,
-      theme: "plain",
-      body: [
-        [
-          {
-            content: "PREPARED FOR",
-            styles: { textColor: textLight, fontSize: 10 },
-          },
-          {
-            content: "SUMMARY #",
-            styles: { halign: "right", textColor: textLight, fontSize: 10 },
-          },
-        ],
-        [
-          {
-            content: currentCalculations.clientName,
-            styles: { textColor: textDark, fontStyle: "bold", fontSize: 12 },
-          },
-          {
-            content: quoteNum,
-            styles: {
-              halign: "right",
-              textColor: textDark,
-              fontStyle: "bold",
-              fontSize: 11,
-            },
-          },
-        ],
+    // --- FINANCIAL BREAKDOWN TABLE ---
+    console.log("[PDF Gen] Rendering Financial Breakdown...");
+
+    // Define the table rows based on your requirements
+    const financialBody = [
+      ["Total Unit Price", `PKR ${currentCalculations.totalPrice}`],
+      [
+        `Down Payment (${currentCalculations.downPaymentPercent}%)`,
+        `PKR ${currentCalculations.downPayment}`,
       ],
-    });
-
-    // Schedule Table Construction
-    console.log("[PDF Gen] Building Table Body...");
-    const tableBody = [];
-    tableBody.push([
-      "1",
-      `Investment for ${currentCalculations.projectName}\nUnit: ${currentCalculations.unitNumber}`,
-      `${currentCalculations.netArea} sq. ft.`,
-      `PKR ${currentCalculations.totalPrice}`,
-    ]);
-
-    const isInstallment = currentCalculations.condition
-      .toLowerCase()
-      .includes("installment");
-    console.log(
-      `[PDF Gen] Payment Condition: "${currentCalculations.condition}" | isInstallment: ${isInstallment}`,
-    );
-
-    if (isInstallment) {
-      console.log(
-        `[PDF Gen] Adding ${currentCalculations.numberOfInstallments} installment rows...`,
-      );
-      for (let i = 1; i <= currentCalculations.numberOfInstallments; i++) {
-        tableBody.push([
-          "",
-          `Installment #${i}`,
-          "",
-          `PKR ${currentCalculations.monthlyInstallment}`,
-        ]);
-      }
-    }
-
-    console.log("[PDF Gen] Final Table Body Array:", tableBody);
+      [
+        `Possession (${currentCalculations.possessionPercent}%)`,
+        `PKR ${currentCalculations.possessionAmount}`,
+      ],
+      ["Total Balloon Amount", `PKR ${currentCalculations.totalBalloonAmount}`],
+      [
+        "Standard Monthly Installment",
+        `PKR ${currentCalculations.monthlyInstallment}`,
+      ],
+    ];
 
     doc.autoTable({
       startY: doc.autoTable.previous.finalY + 15,
-      head: [["#", "DESCRIPTION", "DIMENSIONS", "AMOUNT"]],
-      body: tableBody,
+      head: [["Financial Breakdown", "Value"]],
+      body: financialBody,
       theme: "striped",
-      headStyles: { fillColor: pciBlue, textColor: "#FFFFFF" },
-      columnStyles: { 3: { halign: "right" } },
-    });
-
-    // Totals Table
-    console.log("[PDF Gen] Rendering Totals section...");
-    let totalsBody = [];
-    if (isInstallment) {
-      totalsBody = [
-        ["Total Price:", currentCalculations.totalPrice],
-        [
-          `Down Payment (${currentCalculations.downPaymentPercent}%):`,
-          currentCalculations.downPayment,
-        ],
-        [
-          `On Possession (${currentCalculations.possessionPercent}%):`,
-          currentCalculations.possessionAmount,
-        ],
-        ["Remaining For Installments:", currentCalculations.remainingAmount],
-      ];
-    } else {
-      totalsBody = [["Grand Total:", currentCalculations.totalPrice]];
-    }
-
-    doc.autoTable({
-      startY: doc.autoTable.previous.finalY + 8,
-      theme: "plain",
-      body: totalsBody,
-      margin: { left: 100 },
+      headStyles: {
+        fillColor: pciBlue,
+        textColor: "#FFFFFF",
+        fontSize: 12,
+        fontStyle: "bold",
+      },
+      bodyStyles: {
+        fontSize: 10,
+        cellPadding: 5,
+      },
       columnStyles: {
-        0: { fontStyle: "bold", halign: "right" },
-        1: { halign: "right" },
+        1: { halign: "right", fontStyle: "bold" }, // Right-align the values
+      },
+      margin: { left: 15, right: 15 },
+      // This removes the "standard" table borders to look cleaner like the image
+      styles: {
+        lineWidth: 0,
       },
     });
 
-    console.log("[PDF Gen] Saving PDF...");
-    
+    // // Summary Table
+    // doc.autoTable({
+    //   startY: 65,
+    //   theme: "plain",
+    //   body: [
+    //     [
+    //       {
+    //         content: "PREPARED FOR",
+    //         styles: { textColor: textLight, fontSize: 10 },
+    //       },
+    //       {
+    //         content: "SUMMARY #",
+    //         styles: { halign: "right", textColor: textLight, fontSize: 10 },
+    //       },
+    //     ],
+    //     [
+    //       {
+    //         content: currentCalculations.clientName,
+    //         styles: { textColor: textDark, fontStyle: "bold", fontSize: 12 },
+    //       },
+    //       {
+    //         content: quoteNum,
+    //         styles: {
+    //           halign: "right",
+    //           textColor: textDark,
+    //           fontStyle: "bold",
+    //           fontSize: 11,
+    //         },
+    //       },
+    //     ],
+    //   ],
+    // });
+
+    // // Schedule Table Construction
+    // console.log("[PDF Gen] Building Table Body...");
+    // const tableBody = [];
+    // tableBody.push([
+    //   "1",
+    //   `Investment for ${currentCalculations.projectName}\nUnit: ${currentCalculations.unitNumber}`,
+    //   `${currentCalculations.netArea} sq. ft.`,
+    //   `PKR ${currentCalculations.totalPrice}`,
+    // ]);
+
+    // const isInstallment = currentCalculations.condition
+    //   .toLowerCase()
+    //   .includes("installment");
+    // console.log(
+    //   `[PDF Gen] Payment Condition: "${currentCalculations.condition}" | isInstallment: ${isInstallment}`,
+    // );
+
+    // if (isInstallment) {
+    //   console.log(
+    //     `[PDF Gen] Adding ${currentCalculations.numberOfInstallments} installment rows...`,
+    //   );
+    //   for (let i = 1; i <= currentCalculations.numberOfInstallments; i++) {
+    //     tableBody.push([
+    //       "",
+    //       `Installment #${i}`,
+    //       "",
+    //       `PKR ${currentCalculations.monthlyInstallment}`,
+    //     ]);
+    //   }
+    // }
+
+    // console.log("[PDF Gen] Final Table Body Array:", tableBody);
+
+    // doc.autoTable({
+    //   startY: doc.autoTable.previous.finalY + 15,
+    //   head: [["#", "DESCRIPTION", "DIMENSIONS", "AMOUNT"]],
+    //   body: tableBody,
+    //   theme: "striped",
+    //   headStyles: { fillColor: pciBlue, textColor: "#FFFFFF" },
+    //   columnStyles: { 3: { halign: "right" } },
+    // });
+
+    // // Totals Table
+    // console.log("[PDF Gen] Rendering Totals section...");
+    // let totalsBody = [];
+    // if (isInstallment) {
+    //   totalsBody = [
+    //     ["Total Price:", currentCalculations.totalPrice],
+    //     [
+    //       `Down Payment (${currentCalculations.downPaymentPercent}%):`,
+    //       currentCalculations.downPayment,
+    //     ],
+    //     [
+    //       `On Possession (${currentCalculations.possessionPercent}%):`,
+    //       currentCalculations.possessionAmount,
+    //     ],
+    //     ["Remaining For Installments:", currentCalculations.remainingAmount],
+    //   ];
+    // } else {
+    //   totalsBody = [["Grand Total:", currentCalculations.totalPrice]];
+    // }
+
+    // doc.autoTable({
+    //   startY: doc.autoTable.previous.finalY + 8,
+    //   theme: "plain",
+    //   body: totalsBody,
+    //   margin: { left: 100 },
+    //   columnStyles: {
+    //     0: { fontStyle: "bold", halign: "right" },
+    //     1: { halign: "right" },
+    //   },
+    // });
+
+    // console.log("[PDF Gen] Saving PDF...");
+
     return doc;
     console.log("[PDF Gen] Success!");
   } catch (err) {
