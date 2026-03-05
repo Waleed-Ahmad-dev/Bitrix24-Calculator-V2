@@ -4,7 +4,7 @@ export const createTableOfInstallments = () => {
   const plan = document.getElementById("payment-condition").value;
   const totalPriceValue = document.getElementById("summary-total-price").value;
   const downPaymentAmountValue = document.getElementById("summary-downpayment").value;
-  const onPossessionAmountValues = document.getElementById("summary-possession").value;
+  const onPossessionAmountValues = document.getElementById("summary-possession-amount").value;
 
   if (plan == "full") {
     const tableBody = document.getElementById("installment-table-body");
