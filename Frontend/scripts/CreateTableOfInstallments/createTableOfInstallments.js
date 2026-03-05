@@ -2,9 +2,9 @@ export const createTableOfInstallments = () => {
   console.log("Creating/updating the installment table...");
 
   const plan = document.getElementById("payment-condition").value;
-  const totalPriceValue = document.getElementById("summary-total-price").value;
-  const downPaymentAmountValue = document.getElementById("summary-downpayment").value;
-  const onPossessionAmountValues = document.getElementById("summary-possession-amount").value;
+  const totalPriceValue = document.getElementById("total-price").value;
+  const downPaymentAmountValue = document.getElementById("downpayment-percentage").value;
+  const onPossessionAmountValues = document.getElementById("possession-percentage").value;
 
 
   console.log("Total Price Value:", totalPriceValue);
@@ -27,9 +27,7 @@ export const createTableOfInstallments = () => {
   // const installmentPerAmount = parseFloat(
   //   summaryInstallmentElement ? summaryInstallmentElement.textContent.replace(/[^0-9.-]+/g, "") : 0
   // );
-  const installmentPerAmount = (parseFloat(
-    Number(totalPriceValue.replace(/[^0-9.-]+/g, "")) - Number(downPaymentAmountValue.replace(/[^0-9.-]+/g, "")) - Number(onPossessionAmountValues.replace(/[^0-9.-]+/g, ""))
-  ) / plan).toFixed(2);
+  const installmentPerAmount = parseFloat(totalPriceValue.replace(/[^0-9.-]+/g, "") - (totalPriceValue * downPaymentAmountValue / 100) - (totalPriceValue * onPossessionAmountValues / 100)) || 0;
 
   // 1. GATHER ALL BALLOON PAYMENTS FROM THE DOM
   const balloonRows = document.querySelectorAll('.balloon-row');
