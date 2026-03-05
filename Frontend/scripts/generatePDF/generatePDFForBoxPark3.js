@@ -553,7 +553,7 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
       columnStyles: {
         0: { halign: "center", cellWidth: 25 }, // Center the Month numbers
         1: { halign: "left" }, // Left align Description
-        2: { halign: "right" }, // RIGHT ALIGN THE AMOUNT
+        2: { halign: "left" }, // LEFT ALIGN THE AMOUNT
       },
       didParseCell: function (data) {
         // Force the Header of the Amount column to be right-aligned too
