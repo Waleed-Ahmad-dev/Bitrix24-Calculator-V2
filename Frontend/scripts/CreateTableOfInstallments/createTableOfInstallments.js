@@ -27,7 +27,7 @@ export const createTableOfInstallments = () => {
   // const installmentPerAmount = parseFloat(
   //   summaryInstallmentElement ? summaryInstallmentElement.textContent.replace(/[^0-9.-]+/g, "") : 0
   // );
-  const installmentPerAmount = parseFloat(totalPriceValue.replace(/[^0-9.-]+/g, "") - (totalPriceValue * downPaymentAmountValue / 100) - (totalPriceValue * onPossessionAmountValues / 100)) || 0;
+  const installmentPerAmount = parseFloat(Number(totalPriceValue.replace(/[^0-9.-]+/g, "")) - (totalPriceValue * downPaymentAmountValue / 100) - (totalPriceValue * onPossessionAmountValues / 100)) || 0;
 
   // 1. GATHER ALL BALLOON PAYMENTS FROM THE DOM
   const balloonRows = document.querySelectorAll('.balloon-row');
