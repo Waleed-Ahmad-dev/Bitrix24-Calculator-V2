@@ -261,22 +261,33 @@
               </div>
 
               <div id="balloon-payment-section" class="pt-2">
-                  <div class="flex items-center justify-between mb-3">
-                    <label class="block text-sm font-medium text-gray-300">Balloon Payments</label>
-                    <button 
-                      type="button" 
-                      id="add-balloon-btn" 
-                      class="flex items-center justify-center w-8 h-8 bg-white/10 border-2 border-white/20 text-white rounded-full hover:bg-white/20 hover:text-pci-gold transition focus:outline-none focus:ring-2 focus:ring-pci-gold"
-                      title="Add Balloon Payment"
+                <div class="flex items-center justify-between mb-3">
+                  <label class="block text-sm font-medium text-gray-300"
+                    >Balloon Payments</label
+                  >
+                  <button
+                    type="button"
+                    id="add-balloon-btn"
+                    class="flex items-center justify-center w-8 h-8 bg-white/10 border-2 border-white/20 text-white rounded-full hover:bg-white/20 hover:text-pci-gold transition focus:outline-none focus:ring-2 focus:ring-pci-gold"
+                    title="Add Balloon Payment"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                  
-                  <div id="balloon-rows-container" class="space-y-3"></div>
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
                 </div>
+
+                <div id="balloon-rows-container" class="space-y-3"></div>
+              </div>
 
               <div id="custom-area-inputs" class="hidden space-y-6">
                 <div>
@@ -460,10 +471,15 @@
                   class="summary-card-value mt-2"
                 ></div>
               </div>
-              <div
-                id="installment-amount-card"
-                class="summary-card sm:col-span-2"
-              >
+              <div id="balloon-total-card" class="summary-card">
+                <div class="flex items-center text-gray-500 font-semibold">
+                  For Balloon Payments
+                </div>
+                <div id="summary-balloon-total" class="summary-card-value mt-2">
+                  0
+                </div>
+              </div>
+              <div id="installment-amount-card" class="summary-card">
                 <div class="flex items-center text-gray-500 font-semibold">
                   Amount Per Installment
                 </div>
