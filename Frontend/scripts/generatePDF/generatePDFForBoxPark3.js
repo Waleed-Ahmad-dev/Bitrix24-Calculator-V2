@@ -544,29 +544,35 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
       body: scheduleBody,
       theme: "grid",
       headStyles: {
-        fillColor: pciGold, // Using your Gold color for the header
+        fillColor: pciGold,
         textColor: "#333333",
         fontStyle: "bold",
+        halign: "left", // Default alignment for header
       },
+      // --- THIS SECTION ALIGNS THE COLUMN ---
       columnStyles: {
-        0: { cellWidth: 30 },
-        2: { halign: "right" },
+        0: { halign: "center", cellWidth: 25 }, // Center the Month numbers
+        1: { halign: "left" }, // Left align Description
+        2: { halign: "right" }, // RIGHT ALIGN THE AMOUNT
       },
-      // --- THIS ADDS THE ORANGE HIGHLIGHTING ---
       didParseCell: function (data) {
-        // Check if the Description column contains "BALLOON PAYMENT"
-        if (data.column.index === 1 && data.cell.raw === "BALLOON PAYMENT") {
-          // Apply orange/gold background to the whole row
-          data.row.cells[0].styles.fillColor = [255, 248, 225]; // Light Orange/Gold
-          data.row.cells[1].styles.fillColor = [255, 248, 225];
-          data.row.cells[2].styles.fillColor = [255, 248, 225];
+        // Force the Header of the Amount column to be right-aligned too
+        if (data.section === "head" && data.column.index === 2) {
+          data.cell.styles.halign = "right";
+        }
 
-          // Make the text bold and slightly darker orange
+        // Apply orange highlighting for Balloon Payments
+        if (data.column.index === 1 && data.cell.raw === "BALLOON PAYMENT") {
+          const orangeBG = [255, 248, 225];
+          data.row.cells[0].styles.fillColor = orangeBG;
+          data.row.cells[1].styles.fillColor = orangeBG;
+          data.row.cells[2].styles.fillColor = orangeBG;
           data.row.cells[1].styles.fontStyle = "bold";
           data.row.cells[2].styles.fontStyle = "bold";
         }
       },
       margin: { left: 15, right: 15 },
+      styles: { font: "helvetica", fontSize: 9 },
     });
 
     // // Summary Table
