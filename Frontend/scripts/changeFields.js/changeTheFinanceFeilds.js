@@ -1,12 +1,36 @@
-export const changeTheFinanceFields = () => {
+const getBalloonPayments = () => {
+  const balloonPayments = [];
+  document.querySelectorAll(".balloon-row").forEach((row) => {
+    const monthInput = parseInt(row.querySelector(".balloon-month").value);
+    const amountInput = parseFloat(row.querySelector(".balloon-amount").value);
+    if (
+      !isNaN(monthInput) &&
+      monthInput > 0 &&
+      !isNaN(amountInput) &&
+      amountInput > 0
+    ) {
+      balloonPayments.push({ month: monthInput, amount: amountInput });
+    }
+  });
+  return balloonPayments;
+};
 
-     const formatter = new Intl.NumberFormat("en-US", {
+export const changeTheFinanceFields = () => {
+  const formatter = new Intl.NumberFormat("en-US", {
     style: "decimal",
 
     currency: "USD",
   });
 
-const downPaymentAmountField = document.getElementById("summary-downpayment");
+  const ballonPayments = getBalloonPayments();
+  const totalBalloonAmount = ballonPayments.reduce(
+    (sum, payment) => sum + payment.amount,
+    0,
+  );
+  const balloonTotalField = document.getElementById("summary-balloon-total");
+  balloonTotalField.textContent = formatter.format(totalBalloonAmount);
+
+  const downPaymentAmountField = document.getElementById("summary-downpayment");
 
   const onPossessionAmountField = document.getElementById(
     "summary-possession-amount",
@@ -29,22 +53,17 @@ const downPaymentAmountField = document.getElementById("summary-downpayment");
       document.getElementById("total-price").value.replace(/[^0-9.-]+/g, ""),
     ) || 0;
 
-    
-    const plan = document.getElementById("payment-condition").value;
-    
-  
+  const plan = document.getElementById("payment-condition").value;
 
-    if( plan == "full"){
-        totalPriceField.textContent = formatter.format(productPrice);
-        downPaymentAmountField.textContent = '';
-        onPossessionAmountField.textContent = '';
-        installmentAmountField.textContent = '';
-        installmentAmountPerInstallmentField.textContent = '';
-        installmentUnitsField.textContent = '';
-        return;
-    }
-
-
+  if (plan == "full") {
+    totalPriceField.textContent = formatter.format(productPrice);
+    downPaymentAmountField.textContent = "";
+    onPossessionAmountField.textContent = "";
+    installmentAmountField.textContent = "";
+    installmentAmountPerInstallmentField.textContent = "";
+    installmentUnitsField.textContent = "";
+    return;
+  }
 
   const downPaymentPercentage = document.getElementById(
     "downpayment-percentage",
@@ -53,15 +72,10 @@ const downPaymentAmountField = document.getElementById("summary-downpayment");
     "possession-percentage",
   ).value;
   const installmentPlan = document.getElementById("installment-duration").value;
-  
-
- 
 
   console.log("Down Payment Percentage:", downPaymentPercentage);
   console.log("On Possession Percentage:", onPossessionPercentage);
   console.log("Installment Plan:", installmentPlan);
-
- 
 
   const downPaymentAmount = parseFloat(
     (productPrice * downPaymentPercentage) / 100,
@@ -72,7 +86,7 @@ const downPaymentAmountField = document.getElementById("summary-downpayment");
   ).toFixed(2);
 
   const remainingAmountForInstallment = parseFloat(
-    productPrice - downPaymentAmount - onPossessionAmount,
+    productPrice - downPaymentAmount - onPossessionAmount - totalBalloonAmount,
   ).toFixed(2);
 
   const installmentAmount = parseFloat(
