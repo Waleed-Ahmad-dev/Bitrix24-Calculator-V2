@@ -472,18 +472,20 @@ export const generatePDFOfSummaryForBoxPark3 = async () => {
         textColor: "#FFFFFF",
         fontSize: 12,
         fontStyle: "bold",
-        halign: "left", // Ensure header "Value" is positioned correctly
+        halign: "left", 
+        // Sync padding with body to ensure vertical alignment
+        cellPadding: { top: 5, right: 10, bottom: 5, left: 10 }, 
       },
       bodyStyles: {
         fontSize: 10,
-        cellPadding: { top: 5, right: 10, bottom: 5, left: 10 }, // Controlled padding
         textColor: textDark,
+        cellPadding: { top: 5, right: 10, bottom: 5, left: 10 },
       },
       columnStyles: {
-        0: { halign: "left" }, // Labels stay left
-        1: { halign: "right", fontStyle: "bold" }, // Values stay right and bold
+        0: { halign: "left" }, 
+        1: { halign: "right", fontStyle: "bold" }, 
       },
-      // This explicitly aligns the headers to match the columns below them
+      // didParseCell is the correct way to override the header specifically
       didParseCell: function (data) {
         if (data.section === "head" && data.column.index === 1) {
           data.cell.styles.halign = "right";
