@@ -83,7 +83,7 @@ export const changeTheItemFields = async (productID) => {
 
   grossAreaField.value = valuesToSet.grossArea;
   baseRateField.value = valuesToSet.baseRate;
-  downPaymentPercentageField.value = valuesToSet.downPaymentPercentage;
+  projectFieldValue == "673" ? downPaymentPercentageField.value = valuesToSet.downPaymentPercentage : 50;
   priceField.value = valuesToSet.totalPrice
     ? formatter.format(valuesToSet.totalPrice)
     : "";
