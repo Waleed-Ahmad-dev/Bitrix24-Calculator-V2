@@ -30,9 +30,16 @@ export const changeTheItemFields = async (productID) => {
 
   const floor = productData.product.property135.value || "";
 
+
+  console.log("floor:", floor);
+  console.log("baseRate:", baseRate);
+  console.log("grossarea:", grossarea);
+  console.log("netArea:", netArea);
+  console.log("projectFieldValue:", projectFieldValue);
+
   var priceToUse;
 
-  if (projectFieldValue == "Box Park-3") {
+  if (projectFieldValue == "673") {
     if (floor == "299" || floor == "301" || floor == "249") {
        priceToUse = Number(baseRate.replace(/,/g, "")) * Number(netArea.replace(/,/g, ""));
     }
