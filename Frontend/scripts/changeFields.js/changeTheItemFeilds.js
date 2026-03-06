@@ -61,7 +61,7 @@ export const changeTheItemFields = async (productID) => {
 
   console.log("price calcualtor nominator", priceCalculatorNominator);
 
-  const dpPercentage = (priceCalculatorNominator / priceToUse * 100).toFixed(2);
+  const dpPercentage = (priceCalculatorNominator / priceToUse * 100).toFixed(5);
 
   console.log("Calculated down payment percentage:", dpPercentage);
 
