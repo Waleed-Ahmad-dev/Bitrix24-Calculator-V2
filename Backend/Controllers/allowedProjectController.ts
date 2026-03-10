@@ -32,8 +32,9 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
 
 
     const projectList = await client.callMethod("user.userfield.list",{filter: {ID: 489}});
-    logger.info('Fetched project list from Bitrix24', { projectListData: projectList.getData() });
     const projectListData = projectList.getData()?.result || [];
+
+    logger.info('Fetched project list from Bitrix24', { projectListData });
 
 
     // const allowedProjects = projectListData
