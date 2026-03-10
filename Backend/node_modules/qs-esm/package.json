@@ -1,0 +1,84 @@
+{
+  "name": "qs-esm",
+  "description": "A modernized, esm-only fork of qs without unnecessary polyfills",
+  "homepage": "https://github.com/payloadcms/qs-esm",
+  "version": "7.0.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/payloadcms/qs-esm.git"
+  },
+  "type": "module",
+  "funding": {
+    "url": "https://github.com/sponsors/ljharb"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "sideEffects": false,
+  "maintainers": [
+    {
+      "name": "Payload",
+      "email": "info@payloadcms.com",
+      "url": "https://payloadcms.com"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Payload",
+      "email": "info@payloadcms.com",
+      "url": "https://payloadcms.com"
+    },
+    {
+      "name": "Jordan Harband",
+      "email": "ljharb@gmail.com",
+      "url": "http://ljharb.codes"
+    }
+  ],
+  "keywords": [
+    "querystring",
+    "qs",
+    "query",
+    "url",
+    "parse",
+    "stringify"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "lib",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@payloadcms/eslint-config": "3.0.0-beta.16",
+    "es-value-fixtures": "^1.7.1",
+    "for-each": "^0.3.3",
+    "has-override-mistake": "^1.0.1",
+    "has-property-descriptors": "^1.0.2",
+    "has-symbols": "^1.1.0",
+    "iconv-lite": "^0.5.1",
+    "mock-property": "^1.1.0",
+    "npmignore": "^0.3.1",
+    "nyc": "^10.3.2",
+    "object-inspect": "^1.13.4",
+    "prettier": "3.7.4",
+    "qs-iconv": "^1.0.4",
+    "safer-buffer": "^2.1.2",
+    "tape": "^5.9.0"
+  },
+  "license": "BSD-3-Clause",
+  "publishConfig": {
+    "ignore": [
+      "!dist/*",
+      "bower.json",
+      "component.json",
+      ".github/workflows",
+      "logos",
+      "tea.yaml"
+    ]
+  },
+  "scripts": {
+    "test": "tape 'test/**/*.cjs'",
+    "lint": "eslint --ext=js,mjs ."
+  }
+}
