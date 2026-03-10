@@ -3,6 +3,7 @@ import { handleOAuthRedirect } from '../Auth/bitrix24AuthUtil.js';
 import { logger } from '../Utils/logger.js';
 
 
+// Controller to handle the OAuth callback from Bitrix24:
 export const handleAuthCallback = async(req: Request, res: Response) : Promise<void | Response> => {
 
     const code = req.query.code as string | undefined;
