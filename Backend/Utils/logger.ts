@@ -3,8 +3,9 @@ import { createLogger, format, transports } from "winston";
 
 const { combine, timestamp, printf, colorize, errors } = format;
 
-const consoleFormat = printf(({ level, message, timestamp, stack }) => {
-  return `[${timestamp}] ${level}: ${stack || message}`;
+const consoleFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
+    const metaString = Object.keys(meta).length ? JSON.stringify(meta) : '';
+    return `[${timestamp}] ${level}: ${stack || message} ${metaString}`;
 });
 
 export const logger = createLogger({
