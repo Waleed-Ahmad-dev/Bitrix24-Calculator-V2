@@ -2,7 +2,7 @@ import fsextra from 'fs-extra';
 import path from 'path';
 import { B24OAuth } from '@bitrix24/b24jssdk';
 
-const TOKEN_FILE = path.join('/mnt/auth_data', 'b24_auth_tokens.json');
+const TOKEN_FILE = path.join('/mnt/auth_data', 'b24_calc_auth_tokens.json');
 const PORT = process.env.PORT || 3000;
 
 // Tell TS this can be either the B24 instance or null
