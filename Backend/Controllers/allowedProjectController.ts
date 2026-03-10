@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { b24 } from "../Auth/bitrix24AuthUtil.js";
 import { logger } from "../Utils/logger.js";
 
