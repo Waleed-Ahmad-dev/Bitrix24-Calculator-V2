@@ -2,6 +2,7 @@ import express, { type Application } from 'express';
 import { handleAuthCallback } from './Controllers/authController.js';
 import { initializeBitrixService } from './Auth/initializeBitrixService.js';
 import { logger } from './Utils/logger.js';
+import { setupRoutes } from './route.js';
 
 const app: Application = express();
 const PORT: number | string = process.env.PORT || 3000;
@@ -9,6 +10,11 @@ const PORT: number | string = process.env.PORT || 3000;
 
 // Initialize the Bitrix24 service:
 app.get('/', handleAuthCallback);
+
+
+app.use(express.json());
+
+setupRoutes(app);
 
 
 app.listen(PORT, async () => {
