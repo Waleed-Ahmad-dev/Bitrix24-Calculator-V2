@@ -14,7 +14,7 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
 
     const currentUserDataRawResponse = await client.callMethod("user.current", { ID: userId });
 
-    const currentUserData: Record<string, any> = currentUserDataRawResponse.getData() || {};
+    const currentUserData: Record<string, any> = currentUserDataRawResponse.getData()?.result || {};
 
     logger.info('Fetched current user data from Bitrix24', { currentUserData });
 
