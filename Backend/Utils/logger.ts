@@ -1,36 +1,34 @@
 // utils/logger.ts
-import { createLogger, format, transports } from 'winston';
+import { createLogger, format, transports } from "winston";
 
 const { combine, timestamp, printf, colorize, errors } = format;
 
-
 const consoleFormat = printf(({ level, message, timestamp, stack }) => {
-    return `[${timestamp}] ${level}: ${stack || message}`;
+  return `[${timestamp}] ${level}: ${stack || message}`;
 });
 
 export const logger = createLogger({
-    level: 'info', 
-    
-    format: combine(
-        errors({ stack: true }), 
-        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        format.json() 
-    ),
-    
-    transports: [
-        new transports.File({ filename: 'logs/error.log', level: 'error' }),
-        
-        new transports.File({ filename: 'logs/combined.log' }),
-    ],
+  level: "info",
+
+  format: combine(
+    errors({ stack: true }),
+    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    format.json(),
+  ),
+
+  transports: [
+    new transports.File({ filename: "logs/error.log", level: "error" }),
+
+    new transports.File({ filename: "logs/combined.log" }),
+  ],
 });
 
-
-if (process.env.NODE_ENV !== 'production') {
-    logger.add(new transports.Console({
-        format: combine(
-            colorize(), 
-            timestamp({ format: 'HH:mm:ss' }),
-            consoleFormat
-        ),
-    }));
-}
+logger.add(
+  new transports.Console({
+    format: combine(
+      colorize(),
+      timestamp({ format: "HH:mm:ss" }),
+      consoleFormat,
+    ),
+  }),
+);
