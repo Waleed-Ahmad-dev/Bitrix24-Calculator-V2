@@ -32,16 +32,21 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
 
 
     const projectList = await client.callMethod("user.userfield.list",{filter: {ID: 489}});
-    const projectListData = projectList.getData()?.result || [];
+    const projectListData = projectList.getData()?.result as any[] || [];
+    const fullProjectList = projectListData[0]?.LIST || [];
 
     logger.info('Fetched project list from Bitrix24', { projectListData });
 
 
-    // const allowedProjects = projectListData
-    //     .filter(project => currentUserProjectArray.includes(project.ID))
-    //     .map(project => ({ id: project.ID, name: project.VALUE }));
+    const allowedProjects = fullProjectList
+    .filter((project: { ID: string }) => currentUserProjectArray.includes(project.ID))
+    .map((project: { ID: string; VALUE: string }) => ({ 
+        id: project.ID, 
+        name: project.VALUE 
+    }));
 
-    // res.status(200).json({ allowedProjects });
+
+    res.status(200).json({ allowedProjects });
 
 
 
