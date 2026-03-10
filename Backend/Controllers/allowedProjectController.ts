@@ -39,7 +39,10 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
 
 
     const allowedProjects = fullProjectList
-    .filter((project: { ID: string }) => currentUserProjectArray.includes(project.ID))
+    .filter((project: { ID: string }) => 
+        currentUserProjectArray.includes(Number(project.ID)) || 
+        currentUserProjectArray.includes(project.ID)  // handles both types
+    )
     .map((project: { ID: string; VALUE: string }) => ({ 
         id: project.ID, 
         name: project.VALUE 
