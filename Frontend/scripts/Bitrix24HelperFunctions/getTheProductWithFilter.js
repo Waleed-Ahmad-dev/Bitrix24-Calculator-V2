@@ -83,9 +83,9 @@ export const getTheProductWithFilter = async (filter) => {
             throw new Error("Error while fetching the products")
         }
 
-        const data = response.json();
+        const data = await response.json();
 
-        return data.product || [];  
+        return data.products || [];  
     }
     catch(error){
         console.error(error);
