@@ -5,8 +5,9 @@ import { getProductData } from "./Controllers/productController.js";
 import { getReadableTextOfProperties } from "./Controllers/readableTextOfPropertiesController.js";
 import { getAllProjects } from "./Controllers/projectController.js";
 
+
 export const setupRoutes = (app: any) => {
-    app.post('/allowed-projects', getAllowedProjects);
+    app.get('/allowed-projects', getAllowedProjects);
 
     app.post('/list-properties', getListProperties);
 

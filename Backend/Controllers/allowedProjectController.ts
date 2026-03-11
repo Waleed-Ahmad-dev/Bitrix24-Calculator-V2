@@ -5,14 +5,9 @@ import { logger } from "../Utils/logger.js";
 
 export const getAllowedProjects = async (req: Request, res: Response): Promise<void> => {
     const client = b24.instance;
-    const userId = req.body.userId as string | undefined;
+   
 
-    if (!userId) {
-        res.status(400).json({ message: "User ID is required" });
-        return;
-    }
-
-    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'user.current', params: { ID: userId }, idKey: 'ID', requestId: `currentUser-${Date.now()}`});
+    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'user.current', idKey: 'ID', requestId: `currentUser-${Date.now()}`});
 
     const currentUserData: Record<string, any> = currentUserDataRawResponse.getData()?.result || {};
 
