@@ -9,7 +9,7 @@ const app: Application = express();
 const PORT: number | string = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: "https://bitrix24calculatorv2.premierchoiceint.online/"
+    origin: "https://bitrix24calculatorv2.premierchoiceint.online"
 }));
 
 app.get('/', handleAuthCallback);
