@@ -10,7 +10,7 @@ export const getCatalogProductWithFilters = async (
   const filter = req.body.filter || {};
 
 
-  const preparedFilter: Record<string, any> = {}
+  const preparedFilter: Record<string, any> = {'PROPERTY_99': '155'}
 
      if (filter.propertyType) {
         preparedFilter['PROPERTY_177'] = filter.propertyType;
