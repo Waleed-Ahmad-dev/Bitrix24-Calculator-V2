@@ -70,7 +70,7 @@ export const getTheProductWithFilter = async (filter) => {
     // return allProducts;
 
     try {
-        const response = await fetch("https://calcenchancev2.premierchoiceint.online/product", {
+        const response = await fetch("https://calcenchancev2.premierchoiceint.online/catalog-products", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
