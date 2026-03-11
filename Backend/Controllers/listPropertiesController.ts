@@ -16,7 +16,7 @@ export const getListProperties = async (
 
   const propertiesResponse = await client.actions.v2.call.make({
     method: "catalog.productPropertyEnum.list",
-    params: { filter: { PROPERTY_ID: propertyId } },
+    params: { filter: { propertyId: propertyId } },
     idKey: "ID",
     requestId: `list-${Date.now()}`,
   });
