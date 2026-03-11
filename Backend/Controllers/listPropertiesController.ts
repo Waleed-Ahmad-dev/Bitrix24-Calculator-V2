@@ -13,7 +13,7 @@ export const getListProperties = async (req: Request, res: Response): Promise<vo
     }
 
     try {
-        const propertiesResponse = await client.actions.v2.callList.make({method: 'catalog.productPropertyEnum.list', params: {filter: {PROPERTY_ID: propertyId}}, idKey: 'ID', });
+        const propertiesResponse = await client.actions.v2.callList.make({method: 'catalog.productPropertyEnum.list', params: {filter: {PROPERTY_ID: propertyId}}, idKey: 'ID', requestId: `list-${Date.now()}` });
         const propertiesData = propertiesResponse.getData() || [];
 
         logger.info('Fetched properties from Bitrix24', { propertiesData });
