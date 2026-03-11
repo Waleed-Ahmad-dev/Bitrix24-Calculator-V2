@@ -19,6 +19,6 @@ export const getAllProjects = async (req: Request, res: Response): Promise<void>
 
     logger.info('Fetched projects from Bitrix24', { projectData });
 
-    res.status(200).json({ projects: projectData });
+    res.status(200).json({ projectData });
 
 }
