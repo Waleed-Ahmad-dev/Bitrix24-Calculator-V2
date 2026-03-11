@@ -12,7 +12,7 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
         return;
     }
 
-    const currentUserDataRawResponse = await client.callMethod("user.current", { ID: userId });
+    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'user.current', params: { ID: userId }, idKey: 'ID', requestId: `currentUser-${Date.now()}`});
 
     const currentUserData: Record<string, any> = currentUserDataRawResponse.getData()?.result || {};
 
@@ -31,7 +31,7 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
     }
 
 
-    const projectList = await client.callMethod("user.userfield.list",{filter: {ID: 489}});
+    const projectList = await client.actions.v2.call.make({method: 'user.userfield.list', params: {filter: {ID: 489}}, idKey: 'ID', requestId: `projectList-${Date.now()}`});
     const projectListData = projectList.getData()?.result as any[] || [];
     const fullProjectList = projectListData[0]?.LIST || [];
 
