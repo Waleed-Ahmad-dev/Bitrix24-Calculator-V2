@@ -9,10 +9,26 @@ export const getCatalogProductWithFilters = async (
   const client = b24.instance;
   const filter = req.body.filter || {};
 
+
+  const preparedFilter: Record<string, any> = {}
+
+     if (filter.propertyType) {
+        preparedFilter['PROPERTY_177'] = filter.propertyType;
+    }
+    if (filter.propertyCategory) {
+        preparedFilter['PROPERTY_139'] = filter.propertyCategory;
+    }
+    if (filter.project) {
+        preparedFilter['PROPERTY_173'] = filter.project;
+    }
+    if(filter.propertyFloor){
+        preparedFilter['PROPERTY_135'] = filter.propertyFloor;
+    }
+
   const allProductsResponse = await client.actions.v2.callList.make({
     method: "crm.product.list",
     params: {
-      filter: filter,
+      filter: preparedFilter,
       select: [
         "ID",
         "NAME",
