@@ -14,7 +14,7 @@ export const getListProperties = async (
     return;
   }
 
-  const propertiesResponse = await client.actions.v2.callList.make({
+  const propertiesResponse = await client.actions.v2.call.make({
     method: "catalog.productPropertyEnum.list",
     params: { filter: { PROPERTY_ID: propertyId } },
     idKey: "ID",
