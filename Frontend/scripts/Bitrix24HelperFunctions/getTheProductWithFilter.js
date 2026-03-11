@@ -75,7 +75,7 @@ export const getTheProductWithFilter = async (filter) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(filter),
+            body: JSON.stringify({filter: filter}),
         });
 
 
