@@ -24,7 +24,7 @@ export const getProductData = async (req: Request, res: Response): Promise<void>
         return;
     }
 
-   const productData = productResponse.getData() || {};
+   const productData = productResponse.getData()?.result || {};
 
    logger.info("Fetched product data from Bitrix24", { productData });
    res.json({ product: productData });
