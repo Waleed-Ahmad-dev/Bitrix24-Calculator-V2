@@ -3,12 +3,15 @@ import { handleAuthCallback } from './Controllers/authController.js';
 import { initializeBitrixService } from './Auth/initializeBitrixService.js';
 import { logger } from './Utils/logger.js';
 import { setupRoutes } from './route.js';
+import cors from 'cors';
 
 const app: Application = express();
 const PORT: number | string = process.env.PORT || 3000;
 
+app.use(cors({
+    origin: "https://bitrix24calculatorv2.premierchoiceint.online/"
+}));
 
-// Initialize the Bitrix24 service:
 app.get('/', handleAuthCallback);
 
 

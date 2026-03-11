@@ -32,5 +32,5 @@ export const getListProperties = async (
   const propertiesData = propertiesResponse.getData()?.result || [];
 
   logger.info("Fetched properties from Bitrix24", { propertiesData });
-  res.json({ properties: propertiesData });
+  res.status(200).json({ properties: propertiesData });
 };

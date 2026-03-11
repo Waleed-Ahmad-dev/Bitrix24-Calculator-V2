@@ -2,18 +2,22 @@ import { callBX24Method } from "./callBX24Method.js"
 
 export const fetchReadableText = async (propertyId) => {
 
-    console.log(`[fetchReadableText] Fetching readable text for Property ID: ${propertyId}`);
+    // console.log(`[fetchReadableText] Fetching readable text for Property ID: ${propertyId}`);
 
-    try{
-     const value =  await callBX24Method("catalog.productPropertyEnum.get", { id: propertyId })
+    // try{
+    //  const value =  await callBX24Method("catalog.productPropertyEnum.get", { id: propertyId })
 
-     console.log(`[fetchReadableText] Received value from BX24:`, value);
+    //  console.log(`[fetchReadableText] Received value from BX24:`, value);
 
-     return value.productPropertyEnum.value;
-    }
-    catch(error){
-        console.error("Error fetching readable text:", error);
-        return null;
-    }
+    //  return value.productPropertyEnum.value;
+    // }
+    // catch(error){
+    //     console.error("Error fetching readable text:", error);
+    //     return null;
+    // }
+
+
+    
+
 
 }
