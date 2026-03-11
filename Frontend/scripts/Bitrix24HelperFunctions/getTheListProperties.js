@@ -33,7 +33,7 @@ export const getListProperties = async(propertyID) => {
 
         const data = await response.json();
 
-        return data.propertiesData.productPropertyEnums || null;
+        return data.propertiesData || null;
     }
     catch (error) {
         console.error('Error fetching list properties:', error);
