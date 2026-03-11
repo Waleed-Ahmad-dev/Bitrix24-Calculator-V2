@@ -31,7 +31,7 @@ export const fetchReadableText = async (propertyId) => {
 
     const data = await response.json();
 
-    const enums = data.enumData.productPropertyEnum || null;
+    const enums = data.enumData.productPropertyEnum.value || null;
 
     return enums;
   } catch (error) {
