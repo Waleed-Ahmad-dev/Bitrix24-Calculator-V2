@@ -85,7 +85,7 @@ export const getTheProductWithFilter = async (filter) => {
 
         const data = response.json();
 
-        return data.products || [];  
+        return data.productsData || [];  
     }
     catch(error){
         console.error(error);
