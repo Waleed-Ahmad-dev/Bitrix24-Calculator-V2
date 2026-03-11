@@ -9,6 +9,8 @@ export const getCatalogProductWithFilters = async (
   const client = b24.instance;
   const filter = req.body.filter || {};
 
+  console.log("Received filter for product listing:", filter);
+
 
   const preparedFilter: Record<string, any> = {'PROPERTY_99': '155'}
 
