@@ -1,4 +1,5 @@
 import { callBX24Method } from "../Bitrix24HelperFunctions/callBX24Method.js";
+import { getTheProductData } from "../Bitrix24HelperFunctions/getTheProductData.js";
 
 export const changeTheItemFields = async (productID) => {
   const priceField = document.getElementById("total-price");
@@ -20,9 +21,7 @@ export const changeTheItemFields = async (productID) => {
 
   console.log("Changing fields for product ID:", productID);
 
-  const productData = await callBX24Method("catalog.product.get", {
-    id: productID,
-  });
+  const productData = await getTheProductData(productID);
 
   console.log("Fetched product data:", productData);
 
