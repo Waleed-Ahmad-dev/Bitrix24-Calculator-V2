@@ -45,6 +45,8 @@ export const getCurrentUserAllowedProjects = async () => {
 
     const allowedProject = data.allowedProjects || null;
 
+    console.log("Allowed projects for the current user:", allowedProject);
+
     return allowedProject;
   } catch (error) {
     
