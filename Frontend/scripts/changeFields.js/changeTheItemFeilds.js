@@ -25,12 +25,12 @@ export const changeTheItemFields = async (productID) => {
 
   console.log("Fetched product data:", productData);
 
-  const baseRate = productData.property115.value || 0;
+  const baseRate = productData.PROPERTY_115.value || 0;
 
-  const grossarea = productData.property113.value || 0;
-  const netArea = productData.property149.value || 0;
+  const grossarea = productData.PROPERTY_113.value || 0;
+  const netArea = productData.PROPERTY_149.value || 0;
 
-  const floor = productData.property135.value || "";
+  const floor = productData.PROPERTY_135.value || "";
 
   console.log("floor:", floor);
   console.log("baseRate:", baseRate);
