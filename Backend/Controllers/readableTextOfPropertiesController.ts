@@ -23,7 +23,7 @@ export const getReadableTextOfProperties = async (req: Request, res: Response): 
     const enumData = response.getData()?.result || {};
 
     logger.info('Fetched property enum data from Bitrix24', { enumData });
-    res.json({ enumData });
+    res.status(200).json({ enumData });
 
 }
 

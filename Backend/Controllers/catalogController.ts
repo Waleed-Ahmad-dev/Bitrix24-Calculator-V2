@@ -53,5 +53,5 @@ export const getCatalogProductWithFilters = async (
     logger.info("Fetched products from Bitrix24", { productsData });
     logger.info("Total products fetched", { count: productsData.length });
 
-    res.json({ products: productsData });
+    res.status(200).json({ products: productsData });
 };
