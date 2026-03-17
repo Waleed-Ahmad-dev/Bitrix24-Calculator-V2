@@ -45,6 +45,9 @@ export const changeTheItemFields = async (productID) => {
       priceToUse =
         Number(baseRate.replace(/,/g, "")) * Number(netArea.replace(/,/g, ""));
     }
+    else {
+      priceToUse = cleanBaseRate * cleanGrossArea; 
+    }
   } else {
     priceToUse =
       Number(baseRate.replace(/,/g, "")) * Number(grossarea.replace(/,/g, ""));
