@@ -38,19 +38,21 @@ export const changeTheItemFields = async (productID) => {
   console.log("netArea:", netArea);
   console.log("projectFieldValue:", projectFieldValue);
 
+  const cleanBaseRate = Number(String(baseRate).replace(/,/g, "")) || 0;
+  const cleanGrossArea = Number(String(grossarea).replace(/,/g, "")) || 0;
+  const cleanNetArea = Number(String(netArea).replace(/,/g, "")) || 0;
+
   var priceToUse;
 
   if (projectFieldValue == "673") {
     if (floor == "299" || floor == "301" || floor == "249") {
-      priceToUse =
-        Number(baseRate.replace(/,/g, "")) * Number(netArea.replace(/,/g, ""));
-    }
-    else {
-      priceToUse = cleanBaseRate * cleanGrossArea; 
+      priceToUse = cleanBaseRate * cleanNetArea;
+    } else {
+      priceToUse = cleanBaseRate * cleanGrossArea;
     }
   } else {
     priceToUse =
-      Number(baseRate.replace(/,/g, "")) * Number(grossarea.replace(/,/g, ""));
+      cleanBaseRate * cleanGrossArea;
   }
 
   var priceCalculatorNominator;
