@@ -24,7 +24,7 @@ export const fetchReadableText = async (propertyId) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          propertyId: 381,
+          propertyId: propertyId,
         }),
       },
     );
