@@ -5,9 +5,11 @@ import { logger } from "../Utils/logger.js";
 
 export const getAllowedProjects = async (req: Request, res: Response): Promise<void> => {
     const client = b24.instance;
+
+    const { userId } = req.body;
    
 
-    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'user.current', idKey: 'ID', requestId: `currentUser-${Date.now()}`});
+    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'im.user.list.get', params: {filter: {ID: userId}} , idKey: 'ID', requestId: `currentUserData-${Date.now()}`});
 
     const currentUserData: Record<string, any> = currentUserDataRawResponse.getData()?.result || {};
 
@@ -45,10 +47,6 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
 
 
     res.status(200).json({ allowedProjects });
-
-
-
-
 
 
 }

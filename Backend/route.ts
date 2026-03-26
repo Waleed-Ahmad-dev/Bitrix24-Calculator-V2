@@ -7,7 +7,7 @@ import { getAllProjects } from "./Controllers/projectController.js";
 
 
 export const setupRoutes = (app: any) => {
-    app.get('/allowed-projects', getAllowedProjects);
+    app.post('/allowed-projects', getAllowedProjects);
 
     app.post('/list-properties', getListProperties);
 
