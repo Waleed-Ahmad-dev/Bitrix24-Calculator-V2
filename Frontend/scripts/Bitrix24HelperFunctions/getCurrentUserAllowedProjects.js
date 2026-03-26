@@ -2,6 +2,8 @@
 import { callBX24Method } from "./callBX24Method.js";
 export const getCurrentUserAllowedProjects = async () => {
   // const currentUserProjectsRawData = await callBX24Method("user.current", {});
+  const currentUserId = await callBX24Method("profile", {});
+
 
   //   const currentUserProjectsData = currentUserProjectsRawData;
 
@@ -32,7 +34,16 @@ export const getCurrentUserAllowedProjects = async () => {
 
   try {
     const response = await fetch(
-      "https://calcenchancev2.premierchoiceint.online/allowed-projects",
+      "https://calcenchancev2.premierchoiceint.online/allowed-projects", 
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: currentUserId.ID, 
+        }),
+      }, 
     );
 
     if (!response.ok) {
@@ -48,7 +59,5 @@ export const getCurrentUserAllowedProjects = async () => {
     console.log("Allowed projects for the current user:", allowedProject);
 
     return allowedProject;
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 };
