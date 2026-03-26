@@ -9,7 +9,7 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
     const { userId } = req.body;
    
 
-    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'im.user.get', params: {filter: {ID: userId}} , idKey: 'ID', requestId: `currentUserData-${Date.now()}`});
+    const currentUserDataRawResponse = await client.actions.v2.call.make({method: 'user.get', params: {filter: {ID: userId}} , idKey: 'ID', requestId: `currentUserData-${Date.now()}`});
 
     const currentUserData: Record<string, any> = currentUserDataRawResponse.getData()?.result || {};
 
