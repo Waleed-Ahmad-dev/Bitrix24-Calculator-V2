@@ -22,6 +22,9 @@ export const getAllowedProjects = async (req: Request, res: Response): Promise<v
 
     const currentUserProjectArray = currentUserData.UF_USR_1768305467962 || [];
 
+
+    logger.info('Extracted user project array', { currentUserProjectArray });
+
     if(currentUserProjectArray.length === 0){
         res.status(200).json({message: "No projects assigned to the user", allowedProjects: []});
         return;
