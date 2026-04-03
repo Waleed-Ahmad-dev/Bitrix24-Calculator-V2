@@ -16,7 +16,7 @@ export const filterState = {
   typeMapping: {}, // Maps normalized name -> [original Bitrix IDs]
 };
 
-// 🔹 Normalize property type names visually
+// 🔹 Normalize property type names visually (Sanitizer Function)
 export const normalizeTypeName = (typeName) => {
   if (!typeName) return "N/A";
   const lower = typeName.toLowerCase().trim();
@@ -32,14 +32,12 @@ export const normalizeTypeName = (typeName) => {
 const populateDropdown = (selectId, items, placeholderText) => {
   const select = document.getElementById(selectId);
   if (!select) return;
-  
   select.innerHTML = ""; // Clear existing
   const defaultOpt = document.createElement("option");
   defaultOpt.value = "";
   defaultOpt.text = placeholderText;
   defaultOpt.className = "text-black";
   select.appendChild(defaultOpt);
-
   items.forEach(item => {
     const option = document.createElement("option");
     option.value = item.value;
@@ -80,13 +78,14 @@ export const populateFilters = async () => {
     filterState.typeMapping = {};
     const normalizedTypes = [];
     const seenNormalized = new Set();
+    
     rawTypes.forEach(t => {
       const normName = normalizeTypeName(t.value);
       if (!filterState.typeMapping[normName]) filterState.typeMapping[normName] = [];
-      filterState.typeMapping[normName].push(t.id);
+      filterState.typeMapping[normName].push(String(t.id)); // Ensure IDs are strings
       if (!seenNormalized.has(normName)) {
         seenNormalized.add(normName);
-        normalizedTypes.push({ value: t.id, text: normName });
+        normalizedTypes.push({ value: normName, text: normName }); // FIX: Use normName as value
       }
     });
 
@@ -124,7 +123,6 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
     filterState.selectedType = null;
     filterState.selectedCategory = null;
     filterState.selectedFloor = null;
-
     if (!filterState.selectedProject) {
       populateDropdown("property-type", [], "Select a Project first");
       populateDropdown("property-category", [], "Select a Project first");
@@ -142,10 +140,13 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
     const availableCategoryIds = new Set(projectInventory.map(p => String(p.PROPERTY_139?.value)));
     const availableFloorIds = new Set(projectInventory.map(p => String(p.PROPERTY_135?.value)));
 
-    populateDropdown("property-type",
-      allTypes.filter(t => availableTypeIds.has(String(t.value))),
-      "Select a Property Type"
-    );
+    // Filter normalized types to show only those available for this project
+    const availableNormalizedTypes = allTypes.filter(t => {
+      const matchedIds = filterState.typeMapping[t.value] || [t.value];
+      return matchedIds.some(id => availableTypeIds.has(id));
+    });
+
+    populateDropdown("property-type", availableNormalizedTypes, "Select a Property Type");
     populateDropdown("property-category",
       allCategories.filter(c => availableCategoryIds.has(String(c.value))),
       "Select a Property Category"
@@ -154,7 +155,6 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
       allFloors.filter(f => availableFloorIds.has(String(f.value))),
       "Select a Property Floor"
     );
-
     triggerGlobalFilterUpdate();
   });
 
@@ -181,27 +181,21 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
   });
 };
 
-// Step 3: Dynamic Floor Filtering (Solves Problem 3)
-// Cross-references inventory for Project + Type + Category and dynamically re-renders floors
+// Step 3: Dynamic Floor Filtering
 const updateDependentDropdowns = (allTypes, allCategories, allFloors) => {
   if (!filterState.selectedProject) return;
-
   let filtered = filterState.masterInventory.filter(p =>
     String(p.PROPERTY_173?.value) === filterState.selectedProject
   );
-
   if (filterState.selectedType) {
     const matchedIds = filterState.typeMapping[filterState.selectedType] || [filterState.selectedType];
     filtered = filtered.filter(p => matchedIds.includes(String(p.PROPERTY_177?.value)));
   }
-
   if (filterState.selectedCategory) {
     filtered = filtered.filter(p => String(p.PROPERTY_139?.value) === filterState.selectedCategory);
   }
-
-  // Dynamically update Floors based on the exact Type & Category selection
-  const availableFloorIds = new Set(filtered.map(p => String(p.PROPERTY_135?.value)));
   
+  const availableFloorIds = new Set(filtered.map(p => String(p.PROPERTY_135?.value)));
   populateDropdown("property-floor",
     allFloors.filter(f => availableFloorIds.has(String(f.value))),
     "Select a Property Floor"
@@ -217,7 +211,6 @@ const triggerGlobalFilterUpdate = () => {
     propertyFloor: filterState.selectedFloor,
   };
 
-  // Apply filters to master inventory locally to avoid redundant API calls
   const filteredInventory = filterState.masterInventory.filter(p => {
     if (filters.project && String(p.PROPERTY_173?.value) !== filters.project) return false;
     if (filters.propertyType) {
