@@ -124,7 +124,7 @@ Before starting, ensure you have installed:
 ### Step 1: Download the Project
 Open your computer's terminal (or command prompt) and type:
 ```bash
-git clone <repository_url_here>
+git clone https://github.com/iAmHammad261/Bitrix24-Calculator-V2
 cd Bitrix24-Calculator-V2
 ```
 
