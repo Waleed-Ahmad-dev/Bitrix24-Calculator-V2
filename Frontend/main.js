@@ -21,6 +21,7 @@ console.log("Script loaded successfully from the scripts folder!");
 
 await populateFilters();
 
+
 // Select DOM elements
 const button = document.getElementById("myButton");
 const outputText = document.getElementById("output-text");
@@ -211,17 +212,12 @@ export const attachPDFToLead = async () => {
   }
 };
 
-projectSelect.addEventListener("change", handleFilterChange);
 
-propertyTypeSelect.addEventListener("change", handleFilterChange);
 
-propertyCategorySelect.addEventListener("change", handleFilterChange);
 
 itemFilterSelect.addEventListener("change", handleItemChange);
 
 paymentMethodSelect.addEventListener("change", handlePaymentMethodChange);
-
-propertyFloorSelect.addEventListener("change", handleFilterChange);
 
 downPaymentPercentageSelect.addEventListener(
   "input",

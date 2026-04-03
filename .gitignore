@@ -34,3 +34,6 @@ Thumbs.db
 # Testing and coverage
 coverage/
 .nyc_output/
+
+.vscode
+project_dump.txt
