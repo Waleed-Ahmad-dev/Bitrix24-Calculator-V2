@@ -47,18 +47,15 @@ const populateDropdown = (selectId, items, placeholderText) => {
   });
 };
 
-// Helper to safely map Bitrix raw enums to {value, text} format for Dropdowns
-const formatEnumList = (list, validIdsSet) => {
-  return list
-    .filter(item => {
-       const id = String(item.id || item.ID || item.value || item.VALUE);
-       return validIdsSet.has(id);
-    })
-    .map(item => {
-       const id = String(item.id || item.ID || item.value || item.VALUE);
-       const text = item.value || item.VALUE || item.text || item.TEXT || id;
-       return { value: id, text: text };
-    });
+// 🔹 FIX: Map raw Bitrix enums to guarantee they have matching { value, text } keys
+const formatBitrixEnums = (enums) => {
+  return enums.map(item => {
+     // Securely map Bitrix ID to value
+     const enumId = String(item.ID || item.id || item.value || item.VALUE);
+     // Securely map Bitrix VALUE to text
+     const enumText = String(item.VALUE || item.value || item.TEXT || item.text || enumId);
+     return { value: enumId, text: enumText };
+  });
 };
 
 export const populateFilters = async () => {
@@ -88,6 +85,10 @@ export const populateFilters = async () => {
     const rawCategories = categoryList?.productPropertyEnums || [];
     const rawFloors = floorList?.productPropertyEnums || [];
 
+    // Format Categories and Floors BEFORE filtering so `c.value` and `f.value` exist
+    const formattedCategories = formatBitrixEnums(rawCategories);
+    const formattedFloors = formatBitrixEnums(rawFloors);
+
     // Build Type Mapping for Grouping (Normalization)
     filterState.typeMapping = {};
     const normalizedTypes = [];
@@ -100,7 +101,7 @@ export const populateFilters = async () => {
       filterState.typeMapping[normName].push(id); // Ensure IDs are strings
       if (!seenNormalized.has(normName)) {
         seenNormalized.add(normName);
-        normalizedTypes.push({ value: normName, text: normName });
+        normalizedTypes.push({ value: normName, text: normName }); 
       }
     });
 
@@ -119,7 +120,7 @@ export const populateFilters = async () => {
     }
 
     // 5. Attach Cascading Event Listeners
-    setupCascadingFilters(normalizedTypes, rawCategories, rawFloors);
+    setupCascadingFilters(normalizedTypes, formattedCategories, formattedFloors);
   } catch (error) {
     console.error("Failed to initialize filters:", error);
   }
@@ -162,17 +163,22 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
     });
 
     populateDropdown("property-type", availableNormalizedTypes, "Select a Property Type");
-    populateDropdown("property-category", formatEnumList(allCategories, availableCategoryIds), "Select a Property Category");
-    populateDropdown("property-floor", formatEnumList(allFloors, availableFloorIds), "Select a Property Floor");
-    
+    populateDropdown("property-category",
+      allCategories.filter(c => availableCategoryIds.has(String(c.value))),
+      "Select a Property Category"
+    );
+    populateDropdown("property-floor",
+      allFloors.filter(f => availableFloorIds.has(String(f.value))),
+      "Select a Property Floor"
+    );
     triggerGlobalFilterUpdate();
   });
 
-  // 🔹 TYPE CHANGE (e.g. User selects "2 Bed")
+  // 🔹 TYPE CHANGE (e.g., User selects "2 Bed")
   typeSelect?.addEventListener("change", (e) => {
     filterState.selectedType = e.target.value;
     filterState.selectedFloor = null; // Reset floor on type change
-    updateDependentDropdowns(allCategories, allFloors);
+    updateDependentDropdowns(allTypes, allCategories, allFloors);
     triggerGlobalFilterUpdate();
   });
 
@@ -180,7 +186,7 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
   categorySelect?.addEventListener("change", (e) => {
     filterState.selectedCategory = e.target.value;
     filterState.selectedFloor = null; // Reset floor on category change
-    updateDependentDropdowns(allCategories, allFloors);
+    updateDependentDropdowns(allTypes, allCategories, allFloors);
     triggerGlobalFilterUpdate();
   });
 
@@ -192,31 +198,27 @@ const setupCascadingFilters = (allTypes, allCategories, allFloors) => {
 };
 
 // 🔹 Step 3: Dynamic Floor Filtering
-// This function recalculates the exact floors available based on the chosen Type (2 Bed, 3 Bed) and Category
-const updateDependentDropdowns = (allCategories, allFloors) => {
+const updateDependentDropdowns = (allTypes, allCategories, allFloors) => {
   if (!filterState.selectedProject) return;
-  
-  // Start with all inventory for this project
   let filtered = filterState.masterInventory.filter(p =>
     String(p.PROPERTY_173?.value) === filterState.selectedProject
   );
-  
-  // Filter down by Type (e.g., Only "2 Bed" units)
   if (filterState.selectedType) {
     const matchedIds = filterState.typeMapping[filterState.selectedType] || [filterState.selectedType];
     filtered = filtered.filter(p => matchedIds.includes(String(p.PROPERTY_177?.value)));
   }
-  
-  // Filter down further by Category
   if (filterState.selectedCategory) {
     filtered = filtered.filter(p => String(p.PROPERTY_139?.value) === filterState.selectedCategory);
   }
   
-  // Extract ONLY the floors that contain these specific filtered units
+  // Extract specific floors matching the selected "2 Bed" or category
   const availableFloorIds = new Set(filtered.map(p => String(p.PROPERTY_135?.value)));
   
-  // Repopulate the floor dropdown using the safe enum formatter
-  populateDropdown("property-floor", formatEnumList(allFloors, availableFloorIds), "Select a Property Floor");
+  // Re-populate the dropdown precisely
+  populateDropdown("property-floor",
+    allFloors.filter(f => availableFloorIds.has(String(f.value))),
+    "Select a Property Floor"
+  );
 };
 
 // Helper to sync filtered results with main.js UI
@@ -230,15 +232,12 @@ const triggerGlobalFilterUpdate = () => {
 
   const filteredInventory = filterState.masterInventory.filter(p => {
     if (filters.project && String(p.PROPERTY_173?.value) !== filters.project) return false;
-    
     if (filters.propertyType) {
       const matchedIds = filterState.typeMapping[filters.propertyType] || [filters.propertyType];
       if (!matchedIds.includes(String(p.PROPERTY_177?.value))) return false;
     }
-    
     if (filters.propertyCategory && String(p.PROPERTY_139?.value) !== filters.propertyCategory) return false;
     if (filters.propertyFloor && String(p.PROPERTY_135?.value) !== filters.propertyFloor) return false;
-    
     return true;
   });
 
